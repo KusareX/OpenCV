@@ -64,6 +64,7 @@ for cnt in contours_yellow:
             cv2.circle(frame, (cx, cy), 5, (0, 255, 255), -1)
             cv2.putText(frame, 'Yellow', (cx-40, cy-50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
             
+cv2.imwrite("rendered_images/candies_detected.jpg", frame)
 cv2.imshow('frame', frame)
 
 cv2.waitKey(0)
