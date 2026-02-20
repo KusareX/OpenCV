@@ -33,34 +33,37 @@ contours_yellow, _ = cv2.findContours(mask_yellow, cv2.RETR_EXTERNAL, cv2.CHAIN_
 
 for cnt in contours_red:
     area = cv2.contourArea(cnt)
-    if area > 1000:
+    if area > 1500:
         cv2.drawContours(frame, [cnt], -1, (0, 0, 255), 2)
         mnt = cv2.moments(cnt)
         if mnt['m00'] != 0:
             cx = int(mnt['m10'] / mnt['m00'])
             cy = int(mnt['m01'] / mnt['m00'])
             cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
+            cv2.putText(frame, 'Red', (cx-50, cy-50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
 for cnt in contours_blue:
     area = cv2.contourArea(cnt)
-    if area > 1000:
+    if area > 1500:
         cv2.drawContours(frame, [cnt], -1, (255, 0, 0), 2)
         mnt = cv2.moments(cnt)
         if mnt['m00'] != 0:
             cx = int(mnt['m10'] / mnt['m00'])
             cy = int(mnt['m01'] / mnt['m00'])
             cv2.circle(frame, (cx, cy), 5, (255, 0, 0), -1)
-
+            cv2.putText(frame, 'Blue', (cx-10, cy-50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
+            
 for cnt in contours_yellow:
     area = cv2.contourArea(cnt)
-    if area > 1000:
+    if area > 1500:
         cv2.drawContours(frame, [cnt], -1, (0, 255, 255), 2)
         mnt = cv2.moments(cnt)
         if mnt['m00'] != 0:
             cx = int(mnt['m10'] / mnt['m00'])
             cy = int(mnt['m01'] / mnt['m00'])
             cv2.circle(frame, (cx, cy), 5, (0, 255, 255), -1)
-
+            cv2.putText(frame, 'Yellow', (cx-40, cy-50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+            
 cv2.imshow('frame', frame)
 
 cv2.waitKey(0)
