@@ -1,6 +1,25 @@
 import cv2
 import numpy as np
+import os
 
+input_folder = 'images'
+output_folder = 'output'
+
+formats = ('jpeg', '.png', '.webp', '.jfif', '.tiff')
+
+os.makedirs(output_folder, exist_ok=True)
+files = sorted(os.listdir(input_folder))
+
+for file in files:
+
+    path = os.path.join(input_folder, file)
+    image = cv2.imread(path)
+    if image is None:
+        continue
+    
+    output_path = os.path.join(output_folder, file)
+    cv2.imwrite(output_path, image)
+    
 face_net = cv2.dnn.readNetFromCaffe('data/dnn/deploy.prototxt', 'data/dnn/res10_300x300_ssd_iter_140000.caffemodel')
 
 eye_cascade = cv2.CascadeClassifier('data/haarcascades/haarcascade_eye.xml')
