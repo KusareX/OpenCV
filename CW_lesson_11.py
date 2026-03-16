@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import cv2
 
 net = cv2.dnn.readNetFromCaffe('data/MobileNet/mobilenet_deploy.prototxt', 'data/MobileNet/mobilenet.caffemodel')
@@ -35,42 +34,4 @@ cv2.putText(image, text, (10, 30), cv2.FONT_HERSHEY_TRIPLEX, 0.7, (0, 255, 0), 2
 
 cv2.imshow('img', image)
 cv2.waitKey(0)
-=======
-import cv2
-
-net = cv2.dnn.readNetFromCaffe('data/MobileNet/mobilenet_deploy.prototxt', 'data/MobileNet/mobilenet.caffemodel')
-
-classes = []
-
-with open('data/MobileNet/synset.txt', 'r', encoding='utf-8') as f:
-    for line in f:
-        line = line.strip()
-
-        if not line:
-            continue
-
-        parts = line.split(' ', 1)
-        name = parts[1] if len(parts) > 1 else parts[0]
-        classes.append(name)
-
-image = cv2.imread('photo/women.png')
-blob = cv2.dnn.blobFromImage(cv2.resize(image, (224, 224)), 1.0 / 127.5, (224, 224), (127.5, 127.5, 127.5))
-
-net.setInput(blob) #setInput прогнаняє через мережу
-preds = net.forward() #preds це ймовірність
-
-index = preds[0].argmax()
-
-label = classes[index] if index < len(classes) else 'Undefined'
-conf = float(preds[0][index].item()) * 100
-
-print(f'Клас: {label}')
-print(f'Ймовірність: {conf:.2f}%')
-
-text = label + ': ' + str(round(conf)) + '%'
-cv2.putText(image, text, (10, 30), cv2.FONT_HERSHEY_TRIPLEX, 0.7, (0, 255, 0), 2)
-
-cv2.imshow('img', image)
-cv2.waitKey(0)
->>>>>>> 44317a57aada719ee94709674863405fbf364dca
 cv2.destroyAllWindows()
