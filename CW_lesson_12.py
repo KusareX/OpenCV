@@ -13,56 +13,45 @@ def generate_image(color, shape):
     elif shape == 'triangle':
         points = np.array([[100, 40], [40, 160], [160, 100]])
         cv2.drawContours(img, [points], 0, color, -1)
+
     return img
 
 feats = []
 marks = []
 
 colors = {
-    'red': (0, 0, 255), 
-    'green': (0, 255, 0), 
-    'blue': (255, 0, 0), 
-    'yellow': (0, 255, 255), 
-    'cyan': (255, 255, 0), 
-    'magenta': (255, 0, 255), 
-    'orange': (0, 165, 255), 
-    'purple': (128, 0, 128)}
+    'red': (0, 0, 255),
+    'green': (0, 255, 0),
+    'blue': (255, 0, 0)
+}
 
 shapes = ['circle', 'square', 'triangle']
 
 for color_name, bgr in colors.items():
     for shape in shapes:
-        for _ in range(10):
+        for _ in range(30):
             img = generate_image(bgr, shape)
             mean_color = cv2.mean(img)[:3]
-            feats.append(mean_color)
-            marks.append(f'{color_name.capitalize()} {shape.capitalize()}')
+            preds = [mean_color[0], mean_color[1], mean_color[2]]
 
-feats_train, feats_test, marks_train, marks_test = train_test_split(feats, marks, test_size=0.2)
-model = KNeighborsClassifier(n_neighbors=5) 
+            feats.append(preds)
+            marks.append(f'{color_name.capitalize()} {shape}')
+
+feats_train, feats_test, marks_train, marks_test = train_test_split(feats, marks, test_size=0.3, stratify=marks)
+
+model = KNeighborsClassifier(n_neighbors=3)
 model.fit(feats_train, marks_train)
 
-#--------------------------------------------------
+accuracy = model.score(feats_test, marks_test)
 
-test_color = (0, 165, 255)
-test_shape = 'square'
+print(f'Точність моделі: {100 * accuracy:.2f}%')
 
-frames_colors = []
-for _ in range(5):
-    temp_img = generate_image(test_color, test_shape) 
-    frames_colors.append(cv2.mean(temp_img)[:3])
-    
-smoothed_color = np.mean(frames_colors, axis=0) #зглажування через mean
+test_img = generate_image((222, 21, 10), 'square')
+mean_color = cv2.mean(test_img)[:3]
+preds = model.predict([mean_color])
 
-prediction = model.predict([smoothed_color])
-probabilities = model.predict_proba([smoothed_color]) #predict_proba для відсотку голосів сусідів
-max_prob = np.max(probabilities) * 100
+print(f'Передбачення: {preds}')
 
-text = f"{prediction[0]}: {max_prob:.1f}%"
-cv2.putText(temp_img, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-
-print(text)
-
-cv2.imshow('test', temp_img)
+cv2.imshow('test', test_img)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
