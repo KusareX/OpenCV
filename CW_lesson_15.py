@@ -21,7 +21,6 @@ else:
 model = YOLO('yolov8n.pt')
 
 CONF_THRESHOLD = 0.4
-
 RESIZE_WIDTH = 960
 
 prev_time = time.time()
@@ -84,4 +83,5 @@ while True:
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
+cap.release()
 cv2.destroyAllWindows()
